@@ -10,4 +10,9 @@ public class GenreMapper {
         dto.setName(entity.getName());
         return dto;
     }
+
+    public static Genre dtoToEntity(GenreDTO dto, Genre entity) {
+        entity.setName(dto.getName());
+        return entity;
+    }
 }
