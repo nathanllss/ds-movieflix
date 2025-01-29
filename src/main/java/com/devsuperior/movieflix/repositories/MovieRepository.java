@@ -15,21 +15,21 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
 
     @SuppressWarnings("SqlNoDataSourceInspection")
     @Query(nativeQuery = true, value = """
-            SELECT * FROM (
-            SELECT m.* FROM tb_movie m
-            INNER JOIN tb_genre g ON m.genre_id = g.id
-            WHERE g.id = :genreId
-            ) AS tb_result
-    """, countQuery = """
-            SELECT * FROM (
-            SELECT COUNT(*) FROM tb_movie m
-            INNER JOIN tb_genre g ON m.genre_id = g.id
-            WHERE g.id = :genreId
-            ORDER BY m.title
-            ) AS tb_result
-    """)
+                    SELECT * FROM (
+                    SELECT m.* FROM tb_movie m
+                    INNER JOIN tb_genre g ON m.genre_id = g.id
+                    WHERE (:genreId = 0 OR g.id = :genreId)
+                    ORDER BY m.title
+                    ) AS tb_result
+            """, countQuery = """
+                    SELECT COUNT(*) FROM (
+                    SELECT m.* FROM tb_movie m
+                    INNER JOIN tb_genre g ON m.genre_id = g.id
+                    WHERE (:genreId = 0 OR g.id = :genreId)
+                    ) AS tb_result
+            """)
     Page<Movie> searchMoviesByGenre(Long genreId, Pageable pageable);
 
-    @Query(value = "SELECT obj FROM Movie obj WHERE obj.genre.id = :genreId")
-    List<Movie> searchMovieWithGenre(Long genreId);
+    @Query(value = "SELECT obj FROM Movie obj JOIN FETCH obj.genre WHERE (:genreId = 0 OR obj.genre.id = :genreId)")
+    List<Movie> searchMoviesWithGenre(Long genreId);
 }

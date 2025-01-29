@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,14 +34,24 @@ public class MovieController {
     @PreAuthorize("hasAnyRole('VISITOR', 'MEMBER')")
     public ResponseEntity<Page<MovieCardDTO>> findByGenre(@RequestParam(value = "genreId", defaultValue = "0") String genreId,
                                                           Pageable pageable) {
-        Page<MovieCardDTO> result;
         Long id = Long.parseLong(genreId);
-        if (id.equals(0L)) {
-            result = repository.findAll(pageable).map(x -> MovieMapper.entityToCardDTO(x, new MovieCardDTO()));
-            return ResponseEntity.ok(result);
-        }
-        result  = repository.searchMoviesByGenre(id, pageable).map(x -> MovieMapper.entityToCardDTO(x, new MovieCardDTO()));
-        return ResponseEntity.ok(result);
+        Page<MovieCardDTO> result  = repository.searchMoviesByGenre(id, pageable).map(x -> MovieMapper.entityToCardDTO(x, new MovieCardDTO()));
+        List<MovieCardDTO> entities = repository.searchMoviesWithGenre(id).stream().map(x -> MovieMapper.entityToCardDTO(x, new MovieCardDTO())).toList();
+        entities = replace(result.getContent(), entities);
+        return ResponseEntity.ok(new PageImpl<>(entities, result.getPageable(), result.getTotalElements()));
     }
 
+
+
+    public List<MovieCardDTO> replace(List<MovieCardDTO> ordered, List<MovieCardDTO> unordered) {
+        Map<Long, MovieCardDTO> map = new HashMap<>();
+        for (MovieCardDTO obj : unordered) {
+            map.put(obj.getId(), obj);
+        }
+        List<MovieCardDTO> result = new ArrayList<>();
+        for (MovieCardDTO obj : ordered) {
+            result.add(map.get(obj.getId()));
+        }
+        return result;
+    }
 }
