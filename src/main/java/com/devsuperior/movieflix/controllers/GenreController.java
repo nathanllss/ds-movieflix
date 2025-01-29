@@ -1,8 +1,7 @@
 package com.devsuperior.movieflix.controllers;
 
 import com.devsuperior.movieflix.dto.GenreDTO;
-import com.devsuperior.movieflix.mappers.GenreMapper;
-import com.devsuperior.movieflix.repositories.GenreRepository;
+import com.devsuperior.movieflix.services.GenreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,13 +16,12 @@ import java.util.List;
 public class GenreController {
 
     @Autowired
-    private GenreRepository repository;
+    private GenreService genreService;
 
     @GetMapping
     @PreAuthorize("hasAnyRole('VISITOR', 'MEMBER')")
     public ResponseEntity<List<GenreDTO>> findAll() {
-        List<GenreDTO> list = repository.findAll()
-                .stream().map(x -> GenreMapper.entityToDTO(x, new GenreDTO())).toList();
-        return ResponseEntity.ok(list);
+        List<GenreDTO> result = genreService.findAll();
+        return ResponseEntity.ok(result);
     }
 }
