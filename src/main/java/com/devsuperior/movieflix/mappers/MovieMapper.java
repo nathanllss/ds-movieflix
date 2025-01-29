@@ -1,5 +1,6 @@
 package com.devsuperior.movieflix.mappers;
 
+import com.devsuperior.movieflix.dto.GenreDTO;
 import com.devsuperior.movieflix.dto.MovieCardDTO;
 import com.devsuperior.movieflix.dto.MovieDetailsDTO;
 import com.devsuperior.movieflix.entities.Movie;
@@ -22,7 +23,7 @@ public class MovieMapper {
         dto.setYear(entity.getYear());
         dto.setImgUrl(entity.getImgUrl());
         dto.setSynopsis(entity.getSynopsis());
-        //dto.setGenre(GenreMapper.entityToDTO(entity.getGenre()));
+        dto.setGenre(GenreMapper.entityToDTO(entity.getGenre(), new GenreDTO()));
         return dto;
     }
 
