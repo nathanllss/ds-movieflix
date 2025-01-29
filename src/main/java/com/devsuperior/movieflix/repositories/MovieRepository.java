@@ -1,6 +1,7 @@
 package com.devsuperior.movieflix.repositories;
 
 import com.devsuperior.movieflix.entities.Movie;
+import com.devsuperior.movieflix.projections.MovieCardProjection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -28,7 +29,7 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
                     WHERE (:genreId = 0 OR g.id = :genreId)
                     ) AS tb_result
             """)
-    Page<Movie> searchMoviesByGenre(Long genreId, Pageable pageable);
+    Page<MovieCardProjection> searchMoviesByGenre(Long genreId, Pageable pageable);
 
     @Query(value = "SELECT obj FROM Movie obj JOIN FETCH obj.genre WHERE (:genreId = 0 OR obj.genre.id = :genreId)")
     List<Movie> searchMoviesWithGenre(Long genreId);

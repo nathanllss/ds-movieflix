@@ -1,6 +1,6 @@
 package com.devsuperior.movieflix.util;
 
-import com.devsuperior.movieflix.dto.MovieCardDTO;
+import com.devsuperior.movieflix.projections.IdProjection;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,13 +9,14 @@ import java.util.Map;
 
 public class Util {
 
-    public static List<MovieCardDTO> replace(List<MovieCardDTO> ordered, List<MovieCardDTO> unordered) {
-        Map<Long, MovieCardDTO> map = new HashMap<>();
-        for (MovieCardDTO obj : unordered) {
+    public static <ID> List<? extends IdProjection<ID>> replace(List<? extends IdProjection<ID>> ordered,
+                                                                List<? extends IdProjection<ID>> unordered) {
+        Map<ID, IdProjection<ID>> map = new HashMap<>();
+        for (IdProjection<ID> obj : unordered) {
             map.put(obj.getId(), obj);
         }
-        List<MovieCardDTO> result = new ArrayList<>();
-        for (MovieCardDTO obj : ordered) {
+        List<IdProjection<ID>> result = new ArrayList<>();
+        for (IdProjection<ID> obj : ordered) {
             result.add(map.get(obj.getId()));
         }
         return result;

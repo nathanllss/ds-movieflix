@@ -1,6 +1,8 @@
 package com.devsuperior.movieflix.dto;
 
-public class MovieCardDTO {
+import com.devsuperior.movieflix.projections.IdProjection;
+
+public class MovieCardDTO implements IdProjection<Long> {
 
     private Long id;
     private String title;
@@ -8,6 +10,7 @@ public class MovieCardDTO {
     private Integer year;
     private String imgUrl;
 
+    @Override
     public Long getId() {
         return id;
     }
